@@ -1,45 +1,38 @@
 version: "3.8"
 
 services:
-excalidraw-full:
-image: ghcr.io/betterandbetterii/excalidraw-full
-restart: unless-stopped
+  excalidraw:
+    image: ghcr.io/betterandbetterii/excalidraw-full:latest
+    restart: unless-stopped
 
-# OBLIGATOIRE POUR LE PARSER COOLIFY
-ports:
-  - "3002:3002"
+    ports:
+      - "3002:3002"
 
-environment:
-  # --- Coolify reverse proxy (REQUIRED) ---
-  - SERVICE_URL_EXCALIDRAW_FULL_3002
+    environment:
+      SERVICE_URL_EXCALIDRAW_3002: "http://excalidraw:3002"
 
-  # --- GitHub OAuth ---
-  - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
-  - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
-  - GITHUB_REDIRECT_URL=${GITHUB_REDIRECT_URL}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
+      GITHUB_REDIRECT_URL: ${GITHUB_REDIRECT_URL}
 
-  # --- Security ---
-  - JWT_SECRET=${JWT_SECRET}
+      JWT_SECRET: ${JWT_SECRET}
 
-  # --- Default storage (Cloudflare R2 / S3) ---
-  - STORAGE_TYPE=s3
-  - S3_BUCKET_NAME=${S3_BUCKET_NAME}
-  - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-  - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-  - AWS_REGION=auto
-  - S3_ENDPOINT=${S3_ENDPOINT}
-  - S3_FORCE_PATH_STYLE=true
+      STORAGE_TYPE: s3
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: auto
+      S3_ENDPOINT: ${S3_ENDPOINT}
+      S3_FORCE_PATH_STYLE: "true"
 
-  # --- OpenAI ---
-  - OPENAI_API_KEY=${OPENAI_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
 
-healthcheck:
-  test:
-    - CMD
-    - wget
-    - "--spider"
-    - "--quiet"
-    - "http://localhost:3002"
-  interval: 10s
-  timeout: 5s
-  retries: 10
+    volumes: []
+    depends_on: []
+    labels: {}
+
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://localhost:3002"]
+      interval: 10s
+      timeout: 5s
+      retries: 10

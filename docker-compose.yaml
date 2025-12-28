@@ -5,6 +5,10 @@ excalidraw-full:
 image: ghcr.io/betterandbetterii/excalidraw-full
 restart: unless-stopped
 
+# OBLIGATOIRE POUR LE PARSER COOLIFY
+ports:
+  - "3002:3002"
+
 environment:
   # --- Coolify reverse proxy (REQUIRED) ---
   - SERVICE_URL_EXCALIDRAW_FULL_3002
